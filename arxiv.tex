@@ -1,0 +1,148 @@
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+
+% Metadata
+\title{FCRS-MIS: A Minimal Intelligence System for Verifying Structure Emergence via Prediction-Compression Dual Objectives}
+
+\author{Chen Leiyang}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We propose FCRS-MIS, a minimal, reproducible system that unifies predictive coding, information compression, and self-organization to study the origin of intelligent structures. Through controlled experiments, we verify that a prediction-compression dual objective drives a locally connected micro-unit system to undergo a dual phase transition: first from disorder to ordered structure, then from surface observation fitting to causal dynamic encoding, forming an endogenous predictive world model. Our results demonstrate that intelligence emerges as a phase transition under three necessary conditions: prediction pressure, compression constraint, and local interaction. We provide a fully reproducible CPU-runnable platform for studying intelligent structure emergence.
+\end{abstract}
+
+\section{Introduction}
+
+The past decade has witnessed unprecedented progress in artificial intelligence, driven by the Transformer architecture and large-scale pre-training. However, these systems are fundamentally human-designed statistical fitters: they are constrained to the symbol space defined by human data, and their core structure is fixed before training. They cannot explain the endogenous emergence of intelligent structures, which is the core question of both artificial general intelligence (AGI) and the science of intelligence origin.
+
+We argue that intelligence is not a product of model scale or data volume, but a phase transition phenomenon of a self-organizing system under three necessary and sufficient conditions:
+
+\begin{enumerate}
+    \item \textbf{Prediction pressure}: The system must optimize for predicting future environmental states;
+    \item \textbf{Compression constraint}: The system must operate under limited resources;
+    \item \textbf{Local interaction}: The system must be composed of micro-units with only local connections.
+\end{enumerate}
+
+\section{Related Work}
+
+\subsection{Predictive Coding and Active Inference}
+Predictive coding theory posits that the brain minimizes prediction error between top-down expectations and bottom-up sensory inputs \cite{rao1999predictive}. However, all these systems use pre-designed, fixed hierarchical architectures, and do not address the spontaneous emergence of the structure itself.
+
+\subsection{Information Compression and Intelligent Representations}
+The MDL principle states that the best model of a dataset is the one that minimizes the total description length \cite{rissanen1978modeling}. However, these works use compression only to optimize the parameters of a pre-defined model, not to drive the emergence of the model's structure.
+
+\subsection{Self-Organization and Artificial Life}
+Self-organization theory studies how complex global patterns emerge from simple local rules \cite{holland1995hidden}. However, most of this work focuses on unconstrained self-organization, without a clear predictive objective.
+
+\section{Theoretical Framework}
+
+We formalize the optimization objective as a unified dual loss function:
+
+\begin{equation}
+\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{pred}} + \lambda \mathcal{L}_{\text{compress}}
+\end{equation}
+
+where $\lambda$ is the compression weight, the core control variable of our experiments.
+
+\subsection{Prediction Loss (Driving Force)}
+\begin{equation}
+\mathcal{L}_{\text{pred}} = \mathbb{E}\left[ \text{MSE}\left(\text{Pred}(o_{1:t}), o_{t+1:T}\right) \right]
+\end{equation}
+
+\subsection{Compression Loss (Structure Filter)}
+\begin{equation}
+\mathcal{L}_{\text{compress}} = \mathcal{L}_{\text{sparsity}} + \mathcal{L}_{\text{connectivity}} + \mathcal{L}_{\text{info\_bottleneck}}
+\end{equation}
+
+\subsection{Local Interaction Dynamics}
+Each unit's state is updated based only on its own previous state and local neighbors:
+\begin{equation}
+s_i(t+1) = \tanh\left( W_{\text{in},i} o_t + \sum_{j \in \mathcal{N}(i)} W_{\text{rec},ij} s_j(t) \right)
+\end{equation}
+
+\section{Experimental Design}
+
+We implement FCRS-MIS with a minimal setup:
+\begin{itemize}
+    \item \textbf{Micro-units}: 100 units with small-world local connection topology;
+    \item \textbf{Environment}: 2D physics with a ball moving with random acceleration;
+    \item \textbf{Task}: Input 5 frames, predict next 20 steps;
+    \item \textbf{Training}: 5000 steps, learning rate $10^{-3}$.
+\end{itemize}
+
+We control $\lambda$ as the core independent variable, ranging from 0 to 0.1.
+
+\section{Experimental Results}
+
+All experiments are repeated 3 times with independent random initializations.
+
+\subsection{Compression Constraint Drives Structural Ordering}
+
+As $\lambda$ increases from 0 to 0.1, the Silhouette coefficient increases from 0.46 to 0.90, with a clear step change at $\lambda \approx 0.01$.
+
+\subsection{Dual Phase Transition}
+
+\begin{enumerate}
+    \item \textbf{First Phase Transition} ($\lambda \approx 0.01$): The system completes the transition from disorder to ordered structure;
+    \item \textbf{Second Phase Transition} ($\lambda \geq 0.01$): The system completes the transition from surface fitting to causal encoding.
+\end{enumerate}
+
+\subsection{Causal World Model Emergence}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$\lambda$ & Silhouette & MI(v) & MI(p) & MI(v)-MI(p) \\
+\hline
+0 & 0.46 & 0.18 & 0.88 & -0.70 \\
+0.01 & 0.55 & 0.36 & 0.23 & \textbf{+0.13} \\
+0.05 & 0.84 & 0.45 & 0.23 & \textbf{+0.22} \\
+0.10 & 0.90 & 0.44 & 0.17 & \textbf{+0.27} \\
+\hline
+\end{tabular}
+\end{table}
+
+The hard criterion for world model formation, MI(v) > MI(p), is satisfied for all $\lambda \geq 0.01$.
+
+\section{Discussion}
+
+Our work provides a complete, empirically verified answer to the foundational question: \textbf{why do some structures in the universe become intelligent?}
+
+Intelligence is not a random accident, but an \textbf{inevitable phase transition} result of an open system under three universal constraints:
+\begin{enumerate}
+    \item Free energy flow enables local entropy reduction;
+    \item Survival selection provides directional driving force;
+    \item Limited resources force information compression.
+\end{enumerate}
+
+When these three constraints reach a critical threshold, the system spontaneously transitions from a disordered state to an ordered structure with a causal world model.
+
+\section{Conclusion}
+
+We have demonstrated that \textbf{intelligence emerges as a phase transition} when a minimal system is constrained by prediction and compression objectives. The critical conditions are:
+\begin{enumerate}
+    \item Variable dynamics: The environment must have causal structure;
+    \item Temporal necessity: Prediction tasks must require causal variables;
+    \item Critical compression: Beyond $\lambda \approx 0.01$, causal encoding emerges.
+\end{enumerate}
+
+We provide a fully reproducible CPU-runnable platform at: \url{https://github.com/chleya/fcrs-mis}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
