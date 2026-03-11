@@ -1,40 +1,53 @@
-# FCRS-MIS 最小实验系统
+# Variable Emergence Phase Diagram
 
-> 500行代码，一台普通电脑即可启动
-> 验证「压缩约束是否导致结构形成」
+**研究问题**: 变量如何在表示中涌现？元结构是否是智能产生的必要条件？
 
-## 系统架构
+## 核心发现
+
+### 因果架构 vs Baseline
+
+| 模型 | Corr(z, angle) | 结论 |
+|------|-----------------|------|
+| Baseline | **-0.82** | 走action捷径 |
+| Causal | **+0.89** | 学到真实变量 |
+
+### 捷径检测 (MSE恶化倍数)
+
+| 模型 | 恶化倍数 |
+|------|----------|
+| Baseline | **211x** |
+| Causal | **103x** |
+
+## 核心公式
 
 ```
-MovingDotEnv → FCRS-MIS Micro-Unit → Metrics & Visualization
-     ↓                ↓                    ↓
- 移动点序列      100单元局部连接       聚类/结构熵/相变
+变量涌现 = f(结构, 数据, 激励)
+
+I(z; v) > I(z; a)  ← 可辨识性条件
 ```
 
-## 核心假设
+## 三区域相图
 
-**压缩约束 λ → 结构涌现**
+1. **捷径区**: 低结构 + 高数据 → Corr(z,a) > Corr(z,v)
+2. **统计恢复区**: 高数据 + 弱结构 → |Corr| ≈ 0.5
+3. **因果恢复区**: 因果架构 + 中等激励 → |Corr| ≈ 0.99
 
-- λ=0: 无压缩，随机行为
-- λ临界值: 相变，发生结构涌现
-- λ过大: 表征坍缩
-
-## 运行方式
+## 实验
 
 ```bash
-pip install numpy matplotlib scikit-learn
-python fcrs_mis_minimal.py
+# 运行核心实验
+python mini_experiment.py
 ```
 
-## 预期结果
+## 关键文件
 
-| λ | 聚类质量 | 结构熵 | 行为 |
-|---|---------|--------|------|
-| 0 | 低 | 高 | 随机 |
-| 0.05-0.2 | **阶跃上升** | **阶跃下降** | **相变** |
-| >0.5 | 低 | 低 | 表征坍缩 |
+- `mini_experiment.py` - 极简对比实验
+- `single_variable_experiment.py` - 单一变量验证
 
-## 文件
+## 论文
 
-- `fcrs_mis_minimal.py` - 完整代码
-- `fcrs_mis_results.png` - 可视化结果
+详见: `memory/theoretical_phase_diagram.md`
+
+---
+
+*研究领域: Representation Learning / Causal Representation*
