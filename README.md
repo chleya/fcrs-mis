@@ -1,53 +1,62 @@
 # Variable Emergence Phase Diagram
 
-**研究问题**: 变量如何在表示中涌现？元结构是否是智能产生的必要条件？
+**Research Question**: How do variables emerge in representations? Is meta-structure necessary for intelligence?
 
-## 核心发现
+## Core Findings
 
-### 因果架构 vs Baseline
+### Causal Architecture vs Baseline
 
-| 模型 | Corr(z, angle) | 结论 |
-|------|-----------------|------|
-| Baseline | **-0.82** | 走action捷径 |
-| Causal | **+0.89** | 学到真实变量 |
+| Model | Corr(z, angle) | Conclusion |
+|-------|----------------|------------|
+| Baseline | **-0.82** | Takes action shortcut |
+| Causal | **+0.89** | Learns true variable |
 
-### 捷径检测 (MSE恶化倍数)
+### Shortcut Detection (MSE Degradation)
 
-| 模型 | 恶化倍数 |
-|------|----------|
+| Model | Degradation |
+|-------|-------------|
 | Baseline | **211x** |
 | Causal | **103x** |
 
-## 核心公式
+## Core Formula
 
 ```
-变量涌现 = f(结构, 数据, 激励)
+Variable Emergence = f(Structure, Data, Excitation)
 
-I(z; v) > I(z; a)  ← 可辨识性条件
+I(z; v) > I(z; a)  ← Identifiability Condition
 ```
 
-## 三区域相图
+## Three-Region Phase Diagram
 
-1. **捷径区**: 低结构 + 高数据 → Corr(z,a) > Corr(z,v)
-2. **统计恢复区**: 高数据 + 弱结构 → |Corr| ≈ 0.5
-3. **因果恢复区**: 因果架构 + 中等激励 → |Corr| ≈ 0.99
+1. **Shortcut Zone**: Low structure + High data → Corr(z,a) > Corr(z,v)
+2. **Statistical Recovery**: High data + Weak structure → |Corr| ≈ 0.5
+3. **Causal Recovery**: Causal structure + Medium excitation → |Corr| ≈ 0.99
 
-## 实验
+## Experiments
 
 ```bash
-# 运行核心实验
+# Core experiment
 python mini_experiment.py
+
+# Single-variable verification
+python single_variable_experiment.py
+
+# Numerical stability verification
+python stability_test.py
 ```
 
-## 关键文件
+## Test Files
 
-- `mini_experiment.py` - 极简对比实验
-- `single_variable_experiment.py` - 单一变量验证
+| File | Description |
+|------|-------------|
+| `mini_experiment.py` | Core comparison (Baseline vs Causal) |
+| `single_variable_experiment.py` | Single-variable control |
+| `stability_test.py` | Numerical stability verification |
 
-## 论文
+## Documentation
 
-详见: `memory/theoretical_phase_diagram.md`
+See: `memory/theoretical_phase_diagram.md`
 
 ---
 
-*研究领域: Representation Learning / Causal Representation*
+*Research Area: Representation Learning / Causal Representation*
