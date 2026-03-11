@@ -43,6 +43,15 @@ python single_variable_experiment.py
 
 # Numerical stability verification
 python stability_test.py
+
+# Ablation experiment
+python ablation_experiment.py
+
+# Excitation sweep
+python excitation_sweep.py
+
+# Multi-environment verification
+python multi_env_experiment.py
 ```
 
 ## Test Files
@@ -52,10 +61,20 @@ python stability_test.py
 | `mini_experiment.py` | Core comparison (Baseline vs Causal) |
 | `single_variable_experiment.py` | Single-variable control |
 | `stability_test.py` | Numerical stability verification |
+| `ablation_experiment.py` | Component necessity verification |
+| `excitation_sweep.py` | Excitation intensity sweep |
+| `multi_env_experiment.py` | Multi-environment generalization |
 
-## Documentation
+## Key Discoveries
 
-See: `memory/theoretical_phase_diagram.md`
+1. **Encoder Isolation is Critical**: Removing action from encoder causes -1.159 correlation change
+2. **Dynamics and Decoder are NOT Critical**: Minor changes when removed
+3. **Excitation Affects Emergence**: Higher force generally improves correlation
+4. **Generalization**: Works on CartPole and SpringMass, but not Pendulum
+
+## Mathematical Formalization
+
+See: `memory/mathematical_formalization.md`
 
 ---
 
