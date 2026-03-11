@@ -1,14 +1,36 @@
 """
-单一变量验证实验
-核心: 仅改变"是否有因果元结构"，其他完全一致
+Single-Variable Verification Experiment
+Core: Only change "has causal meta-structure", everything else identical
+
+This experiment compares three models:
+1. Baseline: action in encoder (prone to shortcuts)
+2. Controlled: action isolated from encoder
+3. Causal: encoder-dynamics-decoder architecture
+
+Expected Results:
+- Baseline: Corr(z, angle) ≈ -0.8 (shortcut)
+- Controlled: Corr(z, angle) ≈ 0 (no shortcut, no structure)
+- Causal: Corr(z, angle) ≈ +0.8 (learns true variable)
+
+Run: python single_variable_experiment.py
 """
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import random
 
-np.random.seed(42)
-torch.manual_seed(42)
+# ============================================================
+# RANDOM SEED STANDARDIZATION
+# ============================================================
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED) if torch.cuda.is_available() else None
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 print('='*70)
 print('SINGLE-VARIABLE VERIFICATION')
