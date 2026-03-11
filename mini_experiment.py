@@ -1,11 +1,27 @@
+"""
+Variable Emergence Phase Diagram Experiment
+Core experiment comparing Baseline vs Causal architecture
+
+Run: python mini_experiment.py
+"""
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
+import random
 
-np.random.seed(42)
-torch.manual_seed(42)
+# ============================================================
+# RANDOM SEED STANDARDIZATION (for reproducibility)
+# ============================================================
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED) if torch.cuda.is_available() else None
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 # Simple CartPole Environment
 class SimpleCartPole:
