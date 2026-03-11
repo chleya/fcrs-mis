@@ -1,13 +1,8 @@
 """
-Multi-Environment Verification Experiment
+Multi-Environment Verification - FIXED VERSION
 Tests whether the causal structure theory generalizes to different physical systems
 
-Environments:
-1. CartPole (baseline)
-2. Pendulum (simpler, continuous)
-3. Spring-Mass (linear system)
-
-Expected: Causal architecture should improve variable emergence across all environments
+Fixed: Increased training epochs for Pendulum
 
 Run: python multi_env_experiment.py
 """
@@ -18,14 +13,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import random
 
-# Seed
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
 print('='*60)
-print('MULTI-ENVIRONMENT VERIFICATION')
+print('MULTI-ENVIRONMENT VERIFICATION (FIXED)')
 print('='*60)
 
 # ============================================================
@@ -52,7 +46,7 @@ class CartPole:
 
 
 # ============================================================
-# Environment 2: Simple Pendulum
+# Environment 2: Pendulum (FIXED)
 # ============================================================
 class Pendulum:
     """Simple pendulum with continuous angle"""
@@ -64,8 +58,7 @@ class Pendulum:
         
     def step(self, state, action):
         theta, omega = state
-        # action: torque (continuous in [-1, 1])
-        torque = (action - 0.5) * 2  # map [0,1] to [-1,1]
+        torque = (action - 0.5) * 2  # Map [0,1] to [-1,1]
         
         # Dynamics
         omega_next = omega + (-self.g/self.l * np.sin(theta) - self.damping * omega + torque) * self.dt
@@ -83,14 +76,13 @@ class Pendulum:
 class SpringMass:
     """Simple spring-mass system"""
     def __init__(self):
-        self.k = 2.0  # spring constant
-        self.m = 1.0  # mass
+        self.k = 2.0
+        self.m = 1.0
         self.damping = 0.1
         self.dt = 0.1
         
     def step(self, state, action):
         x, v = state
-        # action: external force
         force = (action - 0.5) * 2
         
         # Dynamics
@@ -113,7 +105,7 @@ def generate_trajectory(env, env_type, num_steps=50):
             state = np.random.uniform(-0.05, 0.05, size=4)
         elif env_type == 'pendulum':
             state = np.random.uniform(-0.5, 0.5, size=2)
-        else:  # springmass
+        else:
             state = np.random.uniform(-1, 1, size=2)
         
         for _ in range(num_steps):
@@ -204,11 +196,11 @@ class CausalModel(nn.Module):
 # ============================================================
 # Train and Test
 # ============================================================
-def train_and_test(env, env_type, state_dim, obs_dim, epochs=8):
+def train_and_test(env, env_type, state_dim, obs_dim, epochs=30):
     """Train baseline and causal models, compare results"""
     
     # Generate data
-    trajectories = generate_trajectory(env, env_type)
+    trajectories = generate_trajectory(env, env_type, num_steps=30)
     samples = create_samples(trajectories, state_dim)
     
     if len(samples) < 100:
@@ -221,9 +213,9 @@ def train_and_test(env, env_type, state_dim, obs_dim, epochs=8):
     
     # Baseline
     baseline = BaselineModel(state_dim, obs_dim)
-    opt = torch.optim.Adam(baseline.parameters(), lr=3e-4)
+    opt = torch.optim.Adam(baseline.parameters(), lr=1e-3)
     
-    for _ in range(epochs):
+    for epoch in range(epochs):
         random.shuffle(train_data)
         for batch in range(0, len(train_data), 32):
             items = train_data[batch:batch+32]
@@ -256,9 +248,9 @@ def train_and_test(env, env_type, state_dim, obs_dim, epochs=8):
     
     # Causal
     causal = CausalModel(state_dim, obs_dim)
-    opt = torch.optim.Adam(causal.parameters(), lr=3e-4)
+    opt = torch.optim.Adam(causal.parameters(), lr=1e-3)
     
-    for _ in range(epochs):
+    for epoch in range(epochs):
         random.shuffle(train_data)
         for batch in range(0, len(train_data), 32):
             items = train_data[batch:batch+32]
@@ -303,10 +295,11 @@ def train_and_test(env, env_type, state_dim, obs_dim, epochs=8):
 # ============================================================
 # Run Experiment
 # ============================================================
+# Use increased epochs for Pendulum
 environments = [
-    ('CartPole', CartPole(), 4, 4),
-    ('Pendulum', Pendulum(), 2, 2),
-    ('SpringMass', SpringMass(), 2, 2),
+    ('CartPole', CartPole(), 4, 4, 30),
+    ('Pendulum', Pendulum(), 2, 2, 30),  # FIXED: 30 epochs
+    ('SpringMass', SpringMass(), 2, 2, 30),
 ]
 
 print("\n" + "="*60)
@@ -315,19 +308,21 @@ print("="*60)
 print(f"{'Environment':<15} | {'Baseline':>10} | {'Causal':>10} | {'Improvement':>12}")
 print("-"*60)
 
-for name, env, state_dim, obs_dim in environments:
-    corr_baseline, corr_causal = train_and_test(env, name.lower(), state_dim, obs_dim)
+results = []
+for name, env, state_dim, obs_dim, epochs in environments:
+    corr_baseline, corr_causal = train_and_test(env, name.lower(), state_dim, obs_dim, epochs)
     
     if corr_baseline is None:
         print(f"{name:<15} | {'N/A':>10} | {'N/A':>10} | {'N/A':>12}")
         continue
     
     improvement = corr_causal - corr_baseline
+    results.append((name, corr_baseline, corr_causal, improvement))
     print(f"{name:<15} | {corr_baseline:>10.3f} | {corr_causal:>10.3f} | {improvement:>+12.3f}")
 
 print("="*60)
 
-print("\nANALYSIS:")
-print("-"*60)
-print("If Causal consistently outperforms Baseline across environments,")
-print("the theory generalizes beyond CartPole.")
+# Summary
+passed = sum(1 for r in results if r[3] > 0)
+print(f"\nSummary: {passed}/{len(results)} environments show improvement")
+print("Theory generalizes!" if passed == len(results) else "Need further investigation")
