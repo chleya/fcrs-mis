@@ -1,89 +1,42 @@
-# FCRS-MIS 研究总结
+# Structure-Capability Law - Research Summary
 
-## 一、核心成果
+## L1-L7 Complete Table
 
-### 理论验证 (100%)
+| Level | Capability | Required Structure | Formula / Critical Point |
+|-------|------------|-------------------|------------------------|
+| L1 | Causal Variable Emergence | Encoder Isolation + λ>0.01 | λ_c = 0.01 |
+| L2 | Object Identity Tracking | Temporal + Binding | λ > 0.05 |
+| L3 | Compositional Generalization | Factorized MLP | N_c ≈ 4 |
+| L4 | Causal Robustness | Random Noise + Causal Training | +24% improvement |
+| L5 | Goal-Directed Planning | Planning Head + Binding | Success > baseline |
+| L6 | Scaling Critical Point | Interaction Density + Binding | N_c ≈ 4 |
+| **L7** | **Inter-Object Relational Reasoning** | **Graph Density ≥0.3 + Binding λ≥0.1** | **λ × Density > 0.03** |
 
-| 验证项 | 状态 | 关键证据 |
-|--------|------|----------|
-| **压缩→结构涌现** | ✅ | Silhouette: 0.46→0.90 |
-| **临界相变** | ✅ | λ≈0.01处阶跃式突变 |
-| **因果变量编码** | ✅ | MI(v) > MI(p), 差值0.27 |
+## New Findings from 3 Directions
 
----
+### 1. Binding Strength Sweep
+- N=2: λ=0.01 optimal (MSE -18%)
+- N=10: λ=0.5 optimal (MSE -37%)
+- **Rule**: Binding strength scales with object count
 
-## 二、关键实验数据
+### 2. Graph Density Experiment  
+- Density=0%: MLP ≈ GNN
+- Density≥0.3: GNN always wins (max 9% gap)
+- **Rule**: Graph Density ≥0.3 is threshold for relational reasoning
 
-### V6.2 最终结果 (随机加速度 + 20步预测)
+### 3. Unified Phase Surface
+- Low Binding + Low Density → MLP region
+- High Binding + High Density → GNN region
+- Critical point: λ ≈ 0.1, Density ≈ 0.3
 
-| λ | Sil | MI(v) | MI(p) | MI(v)-MI(p) |
-|---|------|-------|-------|--------------|
-| 0 | 0.46 | 0.18 | 0.88 | -0.70 |
-| 0.01 | 0.55 | 0.36 | 0.23 | **+0.13** ✅ |
-| 0.05 | 0.84 | 0.45 | 0.23 | **+0.22** ✅ |
-| 0.10 | 0.90 | 0.44 | 0.17 | **+0.27** ✅ |
+## Key Formula
 
----
-
-## 三、关键发现
-
-### 1. 什么时候系统会学速度？
-
-只有当:
-- **变速运动**: v(t+1) ≠ v(t) (随机加速度)
-- **长时序预测**: T ≥ 20步
-- **任务必要**: 位置拟合无法完成预测
-
-### 2. 临界相变机制
-
+**Constraint Interaction Law:**
 ```
-λ < 0.01: 系统拟合位置捷径 → MI(p) > MI(v)
-λ ≥ 0.01: 压缩强制编码动力学 → MI(v) > MI(p)
+能力涌现阈值 = λ_Binding × Density_Graph > 0.03
 ```
 
-### 3. 四大验证标准达成
-
-| 标准 | 达成 |
-|------|------|
-| 完美相变曲线 | ✅ Sil 0.46→0.90 |
-| 世界模型硬达标 | ✅ MI(v) > MI(p) |
-| 结构与因果对齐 | ✅ ARI转正 |
-| 预测不退化 | ✅ 高λ时更稳定 |
-
----
-
-## 四、理论贡献
-
-### 压缩驱动结构涌现
-
-$$\text{Structure} \propto \frac{1}{\lambda_{compress}}$$
-
-### 因果世界模型涌现条件
-
-1. **环境必须变速** - 速度不是常数
-2. **预测必须长时** - T > 10步
-3. **压缩约束必须强** - λ > λ_critical
-
----
-
-## 五、版本迭代
-
-| 版本 | 状态 | 核心发现 |
-|------|------|----------|
-| V1 | ✅ | 相变确认，Sil→0.96 |
-| V2 | ✅ | 反事实+65% |
-| V3-V5 | ⚠️ | 任务设计调整 |
-| V6.1 | ✅ | MI(v)>MI(p) 在λ≥0.02 |
-| **V6.2** | ✅🎉 | **决定性验证成功** |
-
----
-
-## 六、未完待续
-
-- [ ] ARI进一步提升 (当前~0.1)
-- [ ] 预测误差对比曲线
-- [ ] 论文撰写
-
----
-
-*最后更新: 2026-03-10*
+## Files Generated
+- fig4_phase_surface.png
+- fig5_unified_phase.png
+- binding_sweep_results.json
